@@ -1,4 +1,4 @@
-package com.sophos.poc.controller;
+package com.sophos.poc.orden.controller;
 
 import java.util.Date;
 import java.util.UUID;
@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sophos.poc.controller.client.SecurityClient;
-import com.sophos.poc.model.Orders;
-import com.sophos.poc.model.OrdersResponse;
-import com.sophos.poc.model.Status;
-import com.sophos.poc.repository.OrderRepository;
+import com.sophos.poc.orden.controller.client.AuditClient;
+import com.sophos.poc.orden.controller.client.SecurityClient;
+import com.sophos.poc.orden.model.Orders;
+import com.sophos.poc.orden.model.OrdersResponse;
+import com.sophos.poc.orden.model.Status;
+import com.sophos.poc.orden.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,19 +32,23 @@ public class OrderController {
 	@Autowired
 	private SecurityClient securityClient;
 	
-	public OrderController(SecurityClient securityClient, OrderRepository orderRepository) {
+	@Autowired
+	private AuditClient auditClient;
+	
+	public OrderController(SecurityClient securityClient, OrderRepository orderRepository, AuditClient auditClient) {
 		this.securityClient = securityClient;
-		this.orderRepository= orderRepository;
+		this.orderRepository = orderRepository;
+		this.auditClient = auditClient;
 	}
 
-	@RequestMapping(value = "/api/pedido/add", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/orden/add", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Status> addOrder(
 			@RequestHeader(value = "X-RqUID", required = true) String xRqUID,
 			@RequestHeader(value = "X-Channel", required = true) String xChannel,
 			@RequestHeader(value = "X-IPAddr", required = true) String xIPAddr,
 			@RequestHeader(value = "X-Sesion", required = true) String xSesion, 
-			@RequestHeader(value = "X-haveToken", required = false) boolean xHaveToken, 
+			@RequestHeader(value = "X-haveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
 			@RequestBody Orders orders) 
 	{
 		try {
@@ -68,6 +73,18 @@ public class OrderController {
 			orderRepository.save(orders);
 			OrdersResponse response = new OrdersResponse(orders.getApprovalCode());
 			Status status = new Status("0", "Operacion Exitosa", "", response);
+			
+			auditClient.saveAudit(
+					xSesion,
+					null,
+					"Realizar Orden",
+					"Si el pago es exitoso, se ejecuta el registro de la Orden",
+					"Modulo de Pago",
+					null,
+					null,
+					orders
+			);
+			
 			return new ResponseEntity<>(status, HttpStatus.OK);
 
 		} catch (Exception e) {

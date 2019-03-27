@@ -1,4 +1,4 @@
-package com.sophos.poc.model.shoppingcart;
+package com.sophos.poc.orden.model.shoppingcart;
 
 import java.io.Serializable;
 

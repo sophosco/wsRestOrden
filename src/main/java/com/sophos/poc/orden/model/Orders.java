@@ -1,11 +1,11 @@
-package com.sophos.poc.model;
+package com.sophos.poc.orden.model;
 
 import java.util.Date;
 import java.util.Map;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 
-import com.sophos.poc.model.shoppingcart.CarritoDetalleDTO;
+import com.sophos.poc.orden.model.shoppingcart.CarritoDetalleDTO;
 
 public class Orders {
 	

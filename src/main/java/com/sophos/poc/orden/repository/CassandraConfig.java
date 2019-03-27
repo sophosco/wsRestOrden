@@ -1,4 +1,4 @@
-package com.sophos.poc.repository;
+package com.sophos.poc.orden.repository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;

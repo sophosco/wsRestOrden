@@ -1,4 +1,4 @@
-package com.sophos.poc.model;
+package com.sophos.poc.orden.model;
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 

@@ -1,4 +1,4 @@
-package com.sophos.poc;
+package com.sophos.poc.orden;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

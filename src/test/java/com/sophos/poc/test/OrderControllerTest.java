@@ -17,11 +17,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sophos.poc.controller.OrderController;
-import com.sophos.poc.controller.client.SecurityClient;
-import com.sophos.poc.model.Orders;
-import com.sophos.poc.model.Status;
-import com.sophos.poc.repository.OrderRepository;
+import com.sophos.poc.orden.controller.OrderController;
+import com.sophos.poc.orden.controller.client.SecurityClient;
+import com.sophos.poc.orden.model.Orders;
+import com.sophos.poc.orden.model.Status;
+import com.sophos.poc.orden.repository.OrderRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class OrderControllerTest {
