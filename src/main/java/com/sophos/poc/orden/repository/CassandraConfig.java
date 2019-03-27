@@ -11,7 +11,7 @@ import org.springframework.data.cassandra.repository.config.EnableCassandraRepos
 
 @SuppressWarnings("deprecation")
 @Configuration
-@EnableCassandraRepositories("com.sophos.poc.repository")
+@EnableCassandraRepositories("com.sophos.poc.orden.repository")
 public class CassandraConfig extends AbstractCassandraConfiguration{
 
     private static final String KEYSPACE_NAME = System.getenv("POC_CASSANDRA_KEYSPACE");
