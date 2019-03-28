@@ -50,7 +50,7 @@ public class OrderController {
 			@RequestHeader(value = "X-Channel", required = true) String xChannel,
 			@RequestHeader(value = "X-IPAddr", required = true) String xIPAddr,
 			@RequestHeader(value = "X-Sesion", required = true) String xSesion, 
-			@RequestHeader(value = "X-haveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
+			@RequestHeader(value = "X-HaveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
 			@RequestBody Orders orders) 
 	{
 		try {
