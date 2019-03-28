@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.sophos.poc</groupId>
 	<artifactId>wsRestPedido</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>wsRestPedido</name>
 	<description>API Pedido</description>
 
@@ -57,8 +57,6 @@
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>json-schema-validator</artifactId>
@@ -98,8 +96,42 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.sophos.poc</groupId>
+									<artifactId>wsRestPedido</artifactId>
+									<version>0.0.1</version>
+									<type>jar</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}/dependency</outputDirectory>
+									<destFileName>wsRestPedido-0.0.1.jar</destFileName>
+									<includes>**/*.class,**/*.xml,**/*.jar</includes>
+									<excludes>**/*test.class</excludes>
+								</artifactItem>
+							</artifactItems>
+							<includes>**/*.java</includes>
+							<excludes>**/*.properties</excludes>
+							<outputDirectory>${project.build.directory}/jars</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		
 		</plugins>
-		<finalName>wsRestPedido</finalName>
 	</build>
 
 </project>

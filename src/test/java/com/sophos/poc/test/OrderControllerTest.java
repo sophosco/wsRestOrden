@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sophos.poc.orden.controller.OrderController;
+import com.sophos.poc.orden.controller.client.AuditClient;
 import com.sophos.poc.orden.controller.client.SecurityClient;
 import com.sophos.poc.orden.model.Orders;
 import com.sophos.poc.orden.model.Status;
@@ -31,6 +32,9 @@ public class OrderControllerTest {
 	
 	@Mock
 	private SecurityClient securityClient;
+	
+	@Mock
+	private AuditClient auditClient;
 
 	@InjectMocks
 	private OrderController controller;

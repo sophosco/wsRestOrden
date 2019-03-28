@@ -1,4 +1,9 @@
 FROM openjdk:8-jdk-alpine
-ADD target/wsRestPedido.jar wsRestPedido.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "wsRestPedido.jar"]  
+VOLUME /tmp
+ARG DEPENDENCY=target/dependency
+COPY target/wsRestPedido-0.0.1.jar app.jar
+COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY ${DEPENDENCY}/META-INF /app/META-INF
+COPY ${DEPENDENCY}/BOOT-INF/classes /app
+EXPOSE 18080
+ENTRYPOINT ["java","-jar","/app.jar"]
