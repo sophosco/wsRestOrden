@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,7 @@ public class OrderController {
 		this.auditClient = auditClient;
 	}
 
+	@CrossOrigin(origins="*", allowedHeaders = {"Origin"})
 	@RequestMapping(value = "/api/orden/add", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Status> addOrder(
@@ -85,12 +87,14 @@ public class OrderController {
 					orders
 			);
 			
-			return new ResponseEntity<>(status, HttpStatus.OK);
+			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.OK);
+			return res;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			Status status = new Status("500", "ERROR Ocurrio una exception inesperada", e.getMessage(), null);
-			return new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+			return res;
 		}
 	}
 }

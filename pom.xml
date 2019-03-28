@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sophos.poc</groupId>
-	<artifactId>wsRestPedido</artifactId>
+	<artifactId>wsRestOrden</artifactId>
 	<version>0.0.1</version>
 	<name>wsRestPedido</name>
 	<description>API Pedido</description>
@@ -111,12 +111,12 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>com.sophos.poc</groupId>
-									<artifactId>wsRestPedido</artifactId>
+									<artifactId>wsRestOrden</artifactId>
 									<version>0.0.1</version>
 									<type>jar</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>${project.build.directory}/dependency</outputDirectory>
-									<destFileName>wsRestPedido-0.0.1.jar</destFileName>
+									<destFileName>wsRestOrden-0.0.1.jar</destFileName>
 									<includes>**/*.class,**/*.xml,**/*.jar</includes>
 									<excludes>**/*test.class</excludes>
 								</artifactItem>
