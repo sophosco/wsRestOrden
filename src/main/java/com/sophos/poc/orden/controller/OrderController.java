@@ -3,14 +3,15 @@ package com.sophos.poc.orden.controller;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,8 @@ public class OrderController {
 	@Autowired
 	private AuditClient auditClient;
 	
+	private static final Logger logger = LogManager.getLogger(OrderController.class);
+	
 	public OrderController(SecurityClient securityClient, OrderRepository orderRepository, AuditClient auditClient) {
 		this.securityClient = securityClient;
 		this.orderRepository = orderRepository;
@@ -43,7 +46,7 @@ public class OrderController {
 	}
 
 	@CrossOrigin(origins="*", allowedHeaders = {"Origin"})
-	@RequestMapping(value = "/api/orden/add", method = RequestMethod.POST)
+	@PostMapping(path = "/api/orden/add", consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<Status> addOrder(
 			@RequestHeader(value = "X-RqUID", required = true) String xRqUID,
@@ -53,19 +56,20 @@ public class OrderController {
 			@RequestHeader(value = "X-HaveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
 			@RequestBody Orders orders) 
 	{
+		String defaultError ="ERROR Ocurrio una exception inesperada";
 		try {
 			
 			if((xSesion == null || xSesion.isEmpty()) || (xHaveToken && HttpStatus.UNAUTHORIZED.equals(securityClient.verifyJwtToken(xSesion).getStatusCode()))) {
-				Status status = new Status("500","El token no es valido o ya expiro. Intente mas tarde", "ERROR Ocurrio una exception inesperada", null);
+				Status status = new Status("500","El token no es valido o ya expiro. Intente mas tarde", defaultError, null);
 				return new ResponseEntity<>(status, HttpStatus.UNAUTHORIZED);
 			}
 			if(orders == null) {
-				Status status = new Status("500", "ERROR Ocurrio una exception inesperada", "Objecto Orders es <NULL>", null);
+				Status status = new Status("500", defaultError, "Objecto Orders es <NULL>", null);
 				return new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			
 			if(xRqUID == null || xChannel == null || xIPAddr == null ) {
-				Status status = new Status("500", "ERROR Ocurrio una exception inesperada", "Valor <NULL> en alguna cabecera obligatorio (X-RqUID X-Channel X-IPAddr X-Sesion)", null);
+				Status status = new Status("500", defaultError, "Valor <NULL> en alguna cabecera obligatorio (X-RqUID X-Channel X-IPAddr X-Sesion)", null);
 				return new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			
@@ -91,8 +95,8 @@ public class OrderController {
 			return res;
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			Status status = new Status("500", "ERROR Ocurrio una exception inesperada", e.getMessage(), null);
+			logger.error(defaultError, e);
+			Status status = new Status("500", defaultError, e.getMessage(), null);
 			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
 			return res;
 		}

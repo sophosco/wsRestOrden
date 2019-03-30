@@ -7,7 +7,10 @@ public class ResponseInfo {
 	private String system;
 	private Date responseDate;
 	
-	public ResponseInfo() {}
+	public ResponseInfo(String system,Date responseDate ) {
+		this.system = system;
+		this.responseDate = responseDate;
+	}
 
 	public String getSystem() {
 		return system;

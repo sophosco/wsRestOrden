@@ -3,6 +3,8 @@ package com.sophos.poc.orden.controller.client;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +26,7 @@ import com.sophos.poc.orden.model.audit.Audit;
 @Service
 public class AuditClient {
 
+	private static final Logger logger = LogManager.getLogger(AuditClient.class);
 	@Async
 	public ResponseEntity<Status> saveAudit(
 				String IdSesion,
@@ -57,8 +60,7 @@ public class AuditClient {
 					String.class);
 			
 		}catch(Exception e) {
-			e.printStackTrace();
-			System.err.println("Ocurrio un error al registrar auditoria de Orden "+e.getMessage());
+			logger.error("Ocurrio un error al registrar auditoria de Orden ", e);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

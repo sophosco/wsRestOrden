@@ -1,5 +1,6 @@
 package com.sophos.poc.orden.model.shoppingcart;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
@@ -7,7 +8,9 @@ import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @UserDefinedType("cart")
-public class CarritoDetalleDTO {
+public class CarritoDetalleDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("totalPrice")
 	private Long totalPrice = null;

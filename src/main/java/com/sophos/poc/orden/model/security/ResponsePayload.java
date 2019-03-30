@@ -4,7 +4,9 @@ public class ResponsePayload {
 	
 	private boolean verify;
 	
-	public ResponsePayload() {}
+	public ResponsePayload(boolean verify ) {
+		this.verify = verify;
+	}
 
 	public boolean isVerify() {
 		return verify;

@@ -5,9 +5,6 @@ public class TokenRequest {
 	private RequestHeader requestHeader;
 	private RequestPayload requestPayload;
 	
-	public TokenRequest() {}
-	
-	
 	public RequestHeader getRequestHeader() {
 		return requestHeader;
 	}
