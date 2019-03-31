@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: wsrestorden-deployment
+  namespace: dev
+  labels:
+    app: wsrestorden
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wsrestorden
+  template:
+    metadata:
+      labels:
+        app: wsrestorden
+    spec:
+      containers:
+        - name: wsrestorden
+          image: 887482798966.dkr.ecr.us-east-2.amazonaws.com/sophosstore/wsrestorden:beta
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "200m"
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 18081
+          command: [ "/bin/sh", "-c", "env" ]
+          envFrom:
+          - configMapRef:
+              name: wsrestorden-configmap
