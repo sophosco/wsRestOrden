@@ -95,6 +95,7 @@ public class OrderController {
 					"Modulo de Pago",
 					null,
 					null,
+					xHaveToken,
 					orders
 			);
 			
