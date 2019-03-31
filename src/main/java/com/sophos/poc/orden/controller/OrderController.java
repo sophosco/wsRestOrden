@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sophos.poc.orden.controller.client.AuditClient;
 import com.sophos.poc.orden.controller.client.SecurityClient;
 import com.sophos.poc.orden.model.Orders;
@@ -54,8 +57,12 @@ public class OrderController {
 			@RequestHeader(value = "X-IPAddr", required = true) String xIPAddr,
 			@RequestHeader(value = "X-Sesion", required = true) String xSesion, 
 			@RequestHeader(value = "X-HaveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
-			@RequestBody Orders orders) 
+			@RequestBody Orders orders) throws JsonProcessingException 
 	{
+		ObjectMapper jacksonMapper = new ObjectMapper();
+		jacksonMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		logger.debug(xRqUID +" - Request - "+jacksonMapper.writeValueAsString(orders));
+		
 		String defaultError ="ERROR Ocurrio una exception inesperada";
 		try {
 			
@@ -92,6 +99,7 @@ public class OrderController {
 			);
 			
 			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.OK);
+			logger.debug(xRqUID +" - Response - "+jacksonMapper.writeValueAsString(res));
 			return res;
 
 		} catch (Exception e) {

@@ -2,8 +2,10 @@ package com.sophos.poc.orden.model.shoppingcart;
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(value = { "small", "medium", "big" })
 @UserDefinedType("images")
 public class GaleriaProductoDTO {
 

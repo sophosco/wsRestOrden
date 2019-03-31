@@ -16,7 +16,11 @@ public class CassandraConfig extends AbstractCassandraConfiguration{
 
     private static final String KEYSPACE_NAME = System.getenv("POC_CASSANDRA_KEYSPACE");
     private static final String CONTACT_POINTS = System.getenv("POC_CASSANDRA_HOST");
-    private static final int PORT = Integer.parseInt(System.getenv("POC_CASSANDRA_PORT"));
+    private static final int PORT = Integer.parseInt(
+    			System.getenv("POC_CASSANDRA_PORT")!=null && !System.getenv("POC_CASSANDRA_PORT").isEmpty()?
+    					System.getenv("POC_CASSANDRA_PORT"):
+    					"9042"
+    			);
 
     @Override
     protected String getKeyspaceName() {

@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(value = { "images"})
 @UserDefinedType("products")
 public class ProductoDTO {
 
