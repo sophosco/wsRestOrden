@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sophos.poc.orden.controller.client.AuditClient;
 import com.sophos.poc.orden.controller.client.SecurityClient;
 import com.sophos.poc.orden.model.Orders;
@@ -59,25 +58,31 @@ public class OrderController {
 			@RequestHeader(value = "X-HaveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
 			@RequestBody Orders orders) throws JsonProcessingException 
 	{
-		ObjectMapper jacksonMapper = new ObjectMapper();
-		jacksonMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-		logger.debug(xRqUID +" - Request - "+jacksonMapper.writeValueAsString(orders));
-		
+		ObjectMapper mapper = new ObjectMapper();
+		logger.info("Headers: xSesion["+ xSesion +"] ");
+		logger.info("Request: "+mapper.writeValueAsString(orders));
 		String defaultError ="ERROR Ocurrio una exception inesperada";
+
 		try {
 			
 			if((xSesion == null || xSesion.isEmpty()) || (xHaveToken && HttpStatus.UNAUTHORIZED.equals(securityClient.verifyJwtToken(xSesion).getStatusCode()))) {
 				Status status = new Status("500","El token no es valido o ya expiro. Intente mas tarde", defaultError, null);
-				return new ResponseEntity<>(status, HttpStatus.UNAUTHORIZED);
+				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.UNAUTHORIZED);
+				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
+				return res;
 			}
 			if(orders == null) {
-				Status status = new Status("500", defaultError, "Objecto Orders es <NULL>", null);
-				return new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+				Status status = new Status("500", defaultError, "Objecto Orden es <NULL>", null);
+				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
+				return res;
 			}
 			
 			if(xRqUID == null || xChannel == null || xIPAddr == null ) {
 				Status status = new Status("500", defaultError, "Valor <NULL> en alguna cabecera obligatorio (X-RqUID X-Channel X-IPAddr X-Sesion)", null);
-				return new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
+				return res;
 			}
 			
 			orders.setId(UUID.randomUUID().toString());
@@ -87,6 +92,11 @@ public class OrderController {
 			OrdersResponse response = new OrdersResponse(orders.getApprovalCode());
 			Status status = new Status("0", "Operacion Exitosa", "", response);
 			
+			if(orders.getIdSession() == null || orders.getIdSession().isEmpty())
+				orders.setIdSession(UUID.randomUUID().toString());
+			
+			orders.setCreateDate(new Date());
+		
 			auditClient.saveAudit(
 					xSesion,
 					null,
@@ -100,7 +110,7 @@ public class OrderController {
 			);
 			
 			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.OK);
-			logger.debug(xRqUID +" - Response - "+jacksonMapper.writeValueAsString(res));
+			logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
 			return res;
 
 		} catch (Exception e) {

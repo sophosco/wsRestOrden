@@ -1,6 +1,6 @@
 package com.sophos.poc.orden.controller.client;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sophos.poc.orden.model.Orders;
 import com.sophos.poc.orden.model.Status;
-import com.sophos.poc.orden.model.audit.Audit;
+import com.sophos.poc.orden.model.audit.Accion;
 
 @EnableAsync
 @Service
@@ -43,7 +43,6 @@ public class AuditClient {
 		RestTemplate restTemplate = new RestTemplate(); 
 		ObjectMapper obj = new ObjectMapper();
 		
-		Audit audit = new Audit(new Date(), order.getIdSession(), IdUsuario, TipoAccion, DescripcionAccion, ModuloAplicacion, IdProducto, IdCategoria, Base64.encodeBase64String(obj.writeValueAsString(order).getBytes()));
 		try {
 			 HttpHeaders headers = new HttpHeaders();
 			 headers.set("X-RqUID", UUID.randomUUID().toString());
@@ -52,14 +51,31 @@ public class AuditClient {
 			 headers.set("X-Sesion", IdSesion);
 			 headers.set("X-haveToken", XhaveToken+"");
 			 headers.set("Content-Type", "application/json");
-			 HttpEntity<Audit> entity = new HttpEntity<Audit>(audit, headers);
+			 
+			 Accion accion = new Accion();
+			 accion.setDescripcionAccion(DescripcionAccion);
+			 OffsetDateTime offsetDate = OffsetDateTime.now();
+			 accion.setFechaCreacion(offsetDate);
+			 accion.setIdCategoria(IdCategoria);
+			 accion.setIdProducto(IdProducto);
+			 accion.setIdSesion(IdSesion);
+			 accion.setIdUsuario(IdUsuario);
+			 accion.setMessageData(Base64.encodeBase64String(obj.writeValueAsString(order).getBytes()));
+			 accion.setModuloAplicacion(ModuloAplicacion);
+			 accion.setTipoAccion(TipoAccion);
+			 
+			 HttpEntity<Accion> entity = new HttpEntity<Accion>(accion, headers);
 			
-			 restTemplate.exchange(
-					System.getenv("POC_SERVICE_AUDIT_VALIDATE"),
-					HttpMethod.POST,
-					entity,
-					String.class);
-			
+			 logger.info("Request Audit: "+obj.writeValueAsString(entity));
+			 
+			 ResponseEntity<String> response = restTemplate.exchange(
+											System.getenv("POC_SERVICE_AUDIT_VALIDATE"),
+											HttpMethod.POST,
+											entity,
+											String.class);
+			 
+			 logger.info("Response Audit ["+ response.getStatusCode() +"]: ", response.getBody());
+
 		}catch(Exception e) {
 			logger.error("Ocurrio un error al registrar auditoria de Orden ", e);
 		}
