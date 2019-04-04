@@ -60,29 +60,30 @@ public class OrderController {
 			@RequestHeader(value = "X-HaveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
 			@RequestBody String ordersJSON) throws IOException 
 	{
-		JSONObject jsonObject = new JSONObject(ordersJSON);
-		byte[] byteArray = Base64.decodeBase64(jsonObject.getString("ordersJSON").getBytes());
-		String decodedString = new String(byteArray);
-		logger.info(decodedString);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		Orders orders;
-		try {
-			logger.info("String decode - "+decodedString);
-			orders = new ObjectMapper().readValue(decodedString, Orders.class);
-		} catch (Exception e1) {
-			logger.error("Ocurrio un error en el parseo del mensaje ["+ ordersJSON +"]", e1);
-			Status status = new Status("500","Ocurrio un error en el parseo del mensaje", e1.getMessage(), null);
-			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
-			logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
-			return res;
-		}
-		
-		logger.info("Headers: xSesion["+ xSesion +"] ");
-		logger.info("Request: "+mapper.writeValueAsString(orders));
 		String defaultError ="ERROR Ocurrio una exception inesperada";
 
 		try {
+			
+			JSONObject jsonObject = new JSONObject(ordersJSON);
+			byte[] byteArray = Base64.decodeBase64(jsonObject.getString("ordersJSON").getBytes());
+			String decodedString = new String(byteArray);
+			logger.info(decodedString);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			Orders orders;
+			try {
+				logger.info("String decode - "+decodedString);
+				orders = new ObjectMapper().readValue(decodedString, Orders.class);
+			} catch (Exception e1) {
+				logger.error("Ocurrio un error en el parseo del mensaje ["+ ordersJSON +"]", e1);
+				Status status = new Status("500","Ocurrio un error en el parseo del mensaje", e1.getMessage(), null);
+				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
+				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
+				return res;
+			}
+			
+			logger.info("Headers: xSesion["+ xSesion +"] ");
+			logger.info("Request: "+mapper.writeValueAsString(orders));
 			
 			if((xSesion == null || xSesion.isEmpty()) || (xHaveToken && HttpStatus.UNAUTHORIZED.equals(securityClient.verifyJwtToken(xSesion).getStatusCode()))) {
 				Status status = new Status("500","El token no es valido o ya expiro. Intente mas tarde", defaultError, null);
@@ -97,7 +98,7 @@ public class OrderController {
 				return res;
 			}
 			
-			if(xRqUID == null || xChannel == null || xIPAddr == null ) {
+			if(xRqUID == null || xChannel == null || xIPAddr == null ||  ordersJSON == null) {
 				Status status = new Status("500", defaultError, "Valor <NULL> en alguna cabecera obligatorio (X-RqUID X-Channel X-IPAddr X-Sesion)", null);
 				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
 				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
