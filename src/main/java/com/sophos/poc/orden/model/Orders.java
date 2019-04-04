@@ -1,5 +1,6 @@
 package com.sophos.poc.orden.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -7,8 +8,11 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 
 import com.sophos.poc.orden.model.shoppingcart.CarritoDetalleDTO;
 
-public class Orders {
+public class Orders implements Serializable{
 	
+	
+	private static final long serialVersionUID = 1L;
+
 	public Orders() {}
 	
 	@PrimaryKey

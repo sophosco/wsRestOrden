@@ -1,7 +1,10 @@
 package com.sophos.poc.orden.model;
 
-public class OrdersResponse {
+import java.io.Serializable;
+
+public class OrdersResponse implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private String approvalCode;
 
 	public String getApprovalCode() {

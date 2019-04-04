@@ -1,12 +1,15 @@
 package com.sophos.poc.orden.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @UserDefinedType("deliveryMethod")
-public class DeliveryMethod {
+public class DeliveryMethod implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private String value;
 	private String name;
 	@JsonProperty(value="desc")

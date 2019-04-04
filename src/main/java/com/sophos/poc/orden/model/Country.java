@@ -1,12 +1,17 @@
 package com.sophos.poc.orden.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 @UserDefinedType("country")
-public class Country {
+public class Country implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String code;
+	
+	
 	public String getName() {
 		return name;
 	}
@@ -19,11 +24,14 @@ public class Country {
 	public void setCode(String code) {
 		this.code = code;
 	}
+	
 	public Country(String name, String code) {
 		super();
 		this.name = name;
 		this.code = code;
 	}
+	
+	public Country() {}
 	
 	
 

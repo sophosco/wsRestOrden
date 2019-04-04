@@ -1,5 +1,7 @@
 package com.sophos.poc.orden.model.shoppingcart;
 
+import java.io.Serializable;
+
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -7,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(value = { "small", "medium", "big" })
 @UserDefinedType("images")
-public class GaleriaProductoDTO {
+public class GaleriaProductoDTO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("small")
 	private String small = null;
@@ -48,6 +52,8 @@ public class GaleriaProductoDTO {
 		this.medium = medium;
 		this.big = big;
 	}
+
+	public GaleriaProductoDTO() {}
 
 	
 

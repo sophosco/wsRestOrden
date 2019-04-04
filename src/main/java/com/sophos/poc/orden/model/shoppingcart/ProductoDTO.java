@@ -1,5 +1,6 @@
 package com.sophos.poc.orden.model.shoppingcart;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
@@ -9,7 +10,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(value = { "images"})
 @UserDefinedType("products")
-public class ProductoDTO {
+public class ProductoDTO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("id")
 	private Long id = null;
@@ -209,6 +212,7 @@ public class ProductoDTO {
 		this.categoryId = categoryId;
 	}
 
+	public ProductoDTO() {}
 	public ProductoDTO(Long id, String name, List<GaleriaProductoDTO> images, Long oldPrice, Long newPrice,
 			Long discount, Long ratingsCount, Long ratingsValue, String description, String detailDescription,
 			String additionalInformation, Long availibilityCount, Long cartCount, List<ComentarioProductoDTO> comments,
@@ -233,6 +237,8 @@ public class ProductoDTO {
 		this.weight = weight;
 		this.categoryId = categoryId;
 	}
+	
+	
 
 	
 }

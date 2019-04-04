@@ -67,6 +67,7 @@ public class CarritoDetalleDTO implements Serializable {
 		this.products = products;
 	}
 
+	public CarritoDetalleDTO() {}
 	public CarritoDetalleDTO(Long totalPrice, Long totalCartCount, Long compareList, Long wishList,
 			List<ProductoDTO> products) {
 		super();

@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sophos.poc.orden.controller.OrderController;
 import com.sophos.poc.orden.controller.client.AuditClient;
 import com.sophos.poc.orden.controller.client.SecurityClient;
-import com.sophos.poc.orden.model.Orders;
 import com.sophos.poc.orden.model.Status;
 import com.sophos.poc.orden.repository.OrderRepository;
 
@@ -56,7 +55,7 @@ public class OrderControllerTest {
 				"192.168.1.1.",
 				"Token",
 				true,
-				new Orders()
+				""
 			);
 		
 		assertEquals(status.getBody().getCode(), "0");
@@ -91,7 +90,7 @@ public class OrderControllerTest {
 				"192.168.1.1.",
 				null,
 				true,
-				new Orders()
+				""
 			);
 		
 		assertEquals(status.getBody().getCode(), "500");
@@ -108,7 +107,7 @@ public class OrderControllerTest {
 				"192.168.1.1.",
 				"asdasd",
 				false,
-				new Orders()
+				""
 			);
 		
 		assertEquals(status.getBody().getCode(), "0");
@@ -126,7 +125,7 @@ public class OrderControllerTest {
 				"192.168.1.1.",
 				"Token",
 				true,
-				new Orders()
+				""
 			);
 		
 		assertEquals(status.getStatusCode(), HttpStatus.UNAUTHORIZED);

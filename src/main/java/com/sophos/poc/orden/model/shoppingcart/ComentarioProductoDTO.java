@@ -1,11 +1,15 @@
 package com.sophos.poc.orden.model.shoppingcart;
 
+import java.io.Serializable;
+
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @UserDefinedType("comments")
-public class ComentarioProductoDTO {
+public class ComentarioProductoDTO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("comment")
 	private String comment = null;
@@ -58,6 +62,9 @@ public class ComentarioProductoDTO {
 		this.creationDate = creationDate;
 		this.rating = rating;
 	}
+
+	
+	public ComentarioProductoDTO() {}
 
 	
 

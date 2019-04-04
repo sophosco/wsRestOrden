@@ -1,10 +1,13 @@
 package com.sophos.poc.orden.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 @UserDefinedType("billing")
-public class Billing {
+public class Billing implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private String firstName;
 	private String lastName;
 	private String middleName;

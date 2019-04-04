@@ -1,10 +1,13 @@
 package com.sophos.poc.orden.controller;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sophos.poc.orden.controller.client.AuditClient;
 import com.sophos.poc.orden.controller.client.SecurityClient;
@@ -56,9 +58,26 @@ public class OrderController {
 			@RequestHeader(value = "X-IPAddr", required = true) String xIPAddr,
 			@RequestHeader(value = "X-Sesion", required = true) String xSesion, 
 			@RequestHeader(value = "X-HaveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
-			@RequestBody Orders orders) throws JsonProcessingException 
+			@RequestBody String ordersJSON) throws IOException 
 	{
+		JSONObject jsonObject = new JSONObject(ordersJSON);
+		byte[] byteArray = Base64.decodeBase64(jsonObject.getString("ordersJSON").getBytes());
+		String decodedString = new String(byteArray);
+		logger.info(decodedString);
+		
 		ObjectMapper mapper = new ObjectMapper();
+		Orders orders;
+		try {
+			logger.info("String decode - "+decodedString);
+			orders = new ObjectMapper().readValue(decodedString, Orders.class);
+		} catch (Exception e1) {
+			logger.error("Ocurrio un error en el parseo del mensaje ["+ ordersJSON +"]", e1);
+			Status status = new Status("500","Ocurrio un error en el parseo del mensaje", e1.getMessage(), null);
+			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
+			logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
+			return res;
+		}
+		
 		logger.info("Headers: xSesion["+ xSesion +"] ");
 		logger.info("Request: "+mapper.writeValueAsString(orders));
 		String defaultError ="ERROR Ocurrio una exception inesperada";
