@@ -6,7 +6,7 @@ metadata:
   labels:
     app: wsrestorden
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: wsrestorden
@@ -24,8 +24,9 @@ spec:
               cpu: "200m"
           imagePullPolicy: Always
           ports:
-          - containerPort: 18080
-          - containerPort: 443
+           - name: ed-port
+           - containerPort: 18080
           envFrom:
           - configMapRef:
               name: wsrestorden-configmap
+      restartPolicy: Always
