@@ -1,8 +1,13 @@
 package com.sophos.poc.orden.controller.client;
 
+import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,14 +33,32 @@ public class SecurityClient{
 		TokenRequest tokenRq = new TokenRequest();
 		RequestHeader token = new RequestHeader();
 		token.setToken(jwt);
+		
 		tokenRq.setRequestHeader(token);
 		RequestPayload payload = new RequestPayload();
 		payload.setId("1");
 		tokenRq.setRequestPayload(payload);
 		
-		logger.info("Request Security: "+mapper.writeValueAsString(tokenRq));
-		ResponseEntity<String> response = restTemplate.postForEntity(System.getenv("POC_SERVICE_SECURITY_VALIDATE"), tokenRq, String.class);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("X-RqUID", UUID.randomUUID().toString());
+		headers.set("X-Channel", "wsRestOrden");
+		headers.set("X-IPAddr", "192.169.1.1");
+		headers.set("Content-Type", "application/json");
+		
+		HttpEntity<TokenRequest> entity = new HttpEntity<TokenRequest>(tokenRq, headers);
+		
+		logger.info("Request Headers: "+mapper.writeValueAsString(entity.getHeaders()));
+		logger.info("Request Security: "+mapper.writeValueAsString(entity.getBody()));
+		ResponseEntity<String> response = 
+				restTemplate.exchange(
+						System.getenv("POC_SERVICE_SECURITY_VALIDATE"),
+						HttpMethod.POST,
+						entity,
+						String.class
+				);
 		logger.info("Response Security["+ response.getStatusCode() +"] : "+response.getBody());
+		logger.info("Response Security["+ response.getStatusCode() +"] : "+response.getHeaders());
+
 		JSONObject json = new JSONObject(response.getBody());
 		String code = (String) json.getJSONObject("responseHeader").getJSONObject("status").get("code");
 		
