@@ -11,11 +11,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,10 +25,8 @@ import com.sophos.poc.orden.model.OrdersResponse;
 import com.sophos.poc.orden.model.Status;
 import com.sophos.poc.orden.repository.OrderRepository;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/orden")
 public class OrderController {
 
 	@Autowired
@@ -48,10 +45,8 @@ public class OrderController {
 		this.orderRepository = orderRepository;
 		this.auditClient = auditClient;
 	}
-
-	@CrossOrigin(origins="*", allowedHeaders = {"Origin"})
-	@PostMapping(path = "/api/orden/add", consumes = "application/json", produces = "application/json")
-	@ResponseBody
+		
+	@RequestMapping(value = "/add", produces = { "application/json", "application/xml" }, consumes = {"application/json", "application/xml"} , method = RequestMethod.POST)
 	public ResponseEntity<Status> addOrder(
 			@RequestHeader(value = "X-RqUID", required = true) String xRqUID,
 			@RequestHeader(value = "X-Channel", required = true) String xChannel,
