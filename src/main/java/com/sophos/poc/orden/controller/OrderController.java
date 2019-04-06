@@ -63,7 +63,8 @@ public class OrderController {
 		String defaultError ="ERROR Ocurrio una exception inesperada";
 
 		try {
-			
+			logger.info("Request: "+order);
+
 			JSONObject jsonObject = new JSONObject(order);
 			byte[] byteArray = Base64.decodeBase64(jsonObject.getString("order").getBytes());
 			String decodedString = new String(byteArray);
