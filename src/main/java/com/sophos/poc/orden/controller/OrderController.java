@@ -58,14 +58,14 @@ public class OrderController {
 			@RequestHeader(value = "X-IPAddr", required = true) String xIPAddr,
 			@RequestHeader(value = "X-Sesion", required = true) String xSesion, 
 			@RequestHeader(value = "X-HaveToken", required = false, defaultValue = "true" ) boolean xHaveToken, 
-			@RequestBody String ordersJSON) throws IOException 
+			@RequestBody String order) throws IOException 
 	{
 		String defaultError ="ERROR Ocurrio una exception inesperada";
 
 		try {
 			
-			JSONObject jsonObject = new JSONObject(ordersJSON);
-			byte[] byteArray = Base64.decodeBase64(jsonObject.getString("ordersJSON").getBytes());
+			JSONObject jsonObject = new JSONObject(order);
+			byte[] byteArray = Base64.decodeBase64(jsonObject.getString("order").getBytes());
 			String decodedString = new String(byteArray);
 			logger.info(decodedString);
 			
@@ -75,7 +75,7 @@ public class OrderController {
 				logger.info("String decode - "+decodedString);
 				orders = new ObjectMapper().readValue(decodedString, Orders.class);
 			} catch (Exception e1) {
-				logger.error("Ocurrio un error en el parseo del mensaje ["+ ordersJSON +"]", e1);
+				logger.error("Ocurrio un error en el parseo del mensaje ["+ order +"]", e1);
 				Status status = new Status("500","Ocurrio un error en el parseo del mensaje", e1.getMessage(), null);
 				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
 				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
@@ -98,7 +98,7 @@ public class OrderController {
 				return res;
 			}
 			
-			if(xRqUID == null || xChannel == null || xIPAddr == null ||  ordersJSON == null) {
+			if(xRqUID == null || xChannel == null || xIPAddr == null ||  order == null) {
 				Status status = new Status("500", defaultError, "Valor <NULL> en alguna cabecera obligatorio (X-RqUID X-Channel X-IPAddr X-Sesion)", null);
 				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
 				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
