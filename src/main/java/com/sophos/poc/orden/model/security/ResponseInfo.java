@@ -1,11 +1,15 @@
 package com.sophos.poc.orden.model.security;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ResponseInfo {
+public class ResponseInfo implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private String system;
 	private Date responseDate;
+	
+	public ResponseInfo() {}
 	
 	public ResponseInfo(String system,Date responseDate ) {
 		this.system = system;

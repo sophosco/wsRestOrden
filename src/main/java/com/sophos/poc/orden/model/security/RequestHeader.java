@@ -1,7 +1,11 @@
 package com.sophos.poc.orden.model.security;
 
-public class RequestHeader {
+import java.io.Serializable;
+
+public class RequestHeader  implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	public RequestHeader() {}
 	
 	public RequestHeader(String token) {

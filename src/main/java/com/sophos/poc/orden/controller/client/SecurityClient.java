@@ -25,7 +25,6 @@ public class SecurityClient{
 	
 	private static final Logger logger = LogManager.getLogger(SecurityClient.class);
 
-
 	public ResponseEntity<Status> verifyJwtToken(String jwt) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
 		

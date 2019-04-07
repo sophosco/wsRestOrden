@@ -1,7 +1,10 @@
 package com.sophos.poc.orden.model.security;
 
-public class ResponseHeader {
+import java.io.Serializable;
+
+public class ResponseHeader implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private ResponseHeader responseInfo;
 	private Status status;
 	private ResponsePayload responsePayload;
@@ -29,6 +32,13 @@ public class ResponseHeader {
 	}
 
 	public void setResponsePayload(ResponsePayload responsePayload) {
+		this.responsePayload = responsePayload;
+	}
+
+	public ResponseHeader(ResponseHeader responseInfo, Status status, ResponsePayload responsePayload) {
+		super();
+		this.responseInfo = responseInfo;
+		this.status = status;
 		this.responsePayload = responsePayload;
 	}
 	

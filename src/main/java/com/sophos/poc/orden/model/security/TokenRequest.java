@@ -1,7 +1,10 @@
-	package com.sophos.poc.orden.model.security;
+package com.sophos.poc.orden.model.security;
 
-public class TokenRequest {
+import java.io.Serializable;
+
+public class TokenRequest implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private RequestHeader requestHeader;
 	private RequestPayload requestPayload;
 	
@@ -17,7 +20,12 @@ public class TokenRequest {
 	public void setRequestPayload(RequestPayload requestPayload) {
 		this.requestPayload = requestPayload;
 	}
-	
+	public TokenRequest(RequestHeader requestHeader, RequestPayload requestPayload) {
+		super();
+		this.requestHeader = requestHeader;
+		this.requestPayload = requestPayload;
+	}
+	public TokenRequest() {}
 	
 	
 
