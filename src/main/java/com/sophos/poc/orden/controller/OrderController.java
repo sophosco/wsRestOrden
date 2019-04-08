@@ -24,15 +24,14 @@ import com.sophos.poc.orden.model.Encript;
 import com.sophos.poc.orden.model.Orders;
 import com.sophos.poc.orden.model.OrdersResponse;
 import com.sophos.poc.orden.model.Status;
-import com.sophos.poc.orden.repository.EncriptRepository;
 import com.sophos.poc.orden.repository.OrderRepository;
 
 @RestController
 @RequestMapping("/api/orden")
 public class OrderController {
 
-	@Autowired
-	private EncriptRepository encriptRepository;
+//	@Autowired
+//	private EncriptRepository encriptRepository;
 	
 	@Autowired
 	private OrderRepository orderRepository;
@@ -86,13 +85,13 @@ public class OrderController {
 					encript.setRqUID(xRqUID);
 					encript.setCreateDate(new Date());
 					encript.setData(jsonObject.getString("order"));
-					encriptRepository.save(encript);
+					logger.info("Request encripter: "+mapper.writeValueAsString(encript));
+//					encriptRepository.save(encript);
 					save = true;
 				}catch(Exception e) {
 					logger.error("Ocurrio un error al intentar guadar la encripcion", e);
 				}
 			}
-			
 			
 			logger.info("Headers: xSesion["+ xSesion +"] ");
 			if(save) {
