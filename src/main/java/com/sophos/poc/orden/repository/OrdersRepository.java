@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.sophos.poc.orden.model.Orders;
 
-public interface OrderRepository extends CrudRepository<Orders, String>{
+public interface OrdersRepository extends CrudRepository<Orders, String>{
 	
 }

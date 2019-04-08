@@ -21,13 +21,13 @@ import com.sophos.poc.orden.controller.OrderController;
 import com.sophos.poc.orden.controller.client.AuditClient;
 import com.sophos.poc.orden.controller.client.SecurityClient;
 import com.sophos.poc.orden.model.Status;
-import com.sophos.poc.orden.repository.OrderRepository;
+import com.sophos.poc.orden.repository.OrdersRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class OrderControllerTest {
 
 	@Mock
-	private OrderRepository orderRepository;
+	private OrdersRepository orderRepository;
 	
 	@Mock
 	private SecurityClient securityClient;

@@ -25,7 +25,7 @@ import com.sophos.poc.orden.model.Orders;
 import com.sophos.poc.orden.model.OrdersResponse;
 import com.sophos.poc.orden.model.Status;
 import com.sophos.poc.orden.repository.EncriptRepository;
-import com.sophos.poc.orden.repository.OrderRepository;
+import com.sophos.poc.orden.repository.OrdersRepository;
 
 @RestController
 @RequestMapping("/api/orden")
@@ -35,7 +35,7 @@ public class OrderController {
 	private EncriptRepository encriptRepository;
 	
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrdersRepository orderRepository;
 	
 	@Autowired
 	private SecurityClient securityClient;
@@ -45,7 +45,7 @@ public class OrderController {
 	
 	private static final Logger logger = LogManager.getLogger(OrderController.class);
 	
-	public OrderController(SecurityClient securityClient, OrderRepository orderRepository, AuditClient auditClient) {
+	public OrderController(SecurityClient securityClient, OrdersRepository orderRepository, AuditClient auditClient) {
 		this.securityClient = securityClient;
 		this.orderRepository = orderRepository;
 		this.auditClient = auditClient;
