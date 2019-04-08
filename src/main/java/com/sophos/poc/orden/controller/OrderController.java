@@ -20,15 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sophos.poc.orden.controller.client.AuditClient;
 import com.sophos.poc.orden.controller.client.SecurityClient;
+import com.sophos.poc.orden.model.Encript;
 import com.sophos.poc.orden.model.Orders;
 import com.sophos.poc.orden.model.OrdersResponse;
 import com.sophos.poc.orden.model.Status;
+import com.sophos.poc.orden.repository.EncriptRepository;
 import com.sophos.poc.orden.repository.OrderRepository;
 
 @RestController
 @RequestMapping("/api/orden")
 public class OrderController {
 
+	@Autowired
+	private EncriptRepository encriptRepository;
+	
 	@Autowired
 	private OrderRepository orderRepository;
 	
@@ -56,6 +61,7 @@ public class OrderController {
 			@RequestBody String order) throws IOException 
 	{
 		String defaultError ="ERROR Ocurrio una exception inesperada";
+		boolean save = false;
 
 		try {
 			logger.info("Request: "+order);
@@ -66,20 +72,34 @@ public class OrderController {
 			logger.info(decodedString);
 			
 			ObjectMapper mapper = new ObjectMapper();
-			Orders orders;
+			Orders orders = null;
 			try {
 				logger.info("String decode - "+decodedString);
 				orders = new ObjectMapper().readValue(decodedString, Orders.class);
 			} catch (Exception e1) {
-				logger.error("Ocurrio un error en el parseo del mensaje ["+ order +"]", e1);
-				Status status = new Status("500","Ocurrio un error en el parseo del mensaje", e1.getMessage(), null);
-				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
-				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
-				return res;
+				try {
+					Encript encript = new Encript();
+					encript.setChannel(xChannel);
+					encript.setId(UUID.randomUUID().toString());
+					encript.setIdSession(xSesion);
+					encript.setIpAddr(xIPAddr);
+					encript.setRqUID(xRqUID);
+					encript.setCreateDate(new Date());
+					encript.setData(jsonObject.getString("order"));
+					encriptRepository.save(encript);
+					save = true;
+				}catch(Exception e) {
+					logger.error("Ocurrio un error al intentar guadar la encripcion", e);
+				}
 			}
 			
+			
 			logger.info("Headers: xSesion["+ xSesion +"] ");
-			logger.info("Request: "+mapper.writeValueAsString(orders));
+			if(save) {
+				logger.info("Request: "+order);
+			}else {
+				logger.info("Request: "+mapper.writeValueAsString(orders));
+			}
 			
 			if((xSesion == null || xSesion.isEmpty()) || (xHaveToken && HttpStatus.UNAUTHORIZED.equals(securityClient.verifyJwtToken(xSesion).getStatusCode()))) {
 				Status status = new Status("500","El token no es valido o ya expiro. Intente mas tarde", defaultError, null);
@@ -87,7 +107,7 @@ public class OrderController {
 				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
 				return res;
 			}
-			if(orders == null) {
+			if(!save && orders == null) {
 				Status status = new Status("500", defaultError, "Objecto Orden es <NULL>", null);
 				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.INTERNAL_SERVER_ERROR);
 				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
@@ -101,33 +121,54 @@ public class OrderController {
 				return res;
 			}
 			
-			orders.setId(UUID.randomUUID().toString());
-			orders.setApprovalCode(System.currentTimeMillis()+"".lastIndexOf(4)+"");
-			orders.setCreateDate(new Date());
-			orderRepository.save(orders);
-			OrdersResponse response = new OrdersResponse(orders.getApprovalCode());
-			Status status = new Status("0", "Operacion Exitosa", "", response);
 			
-			if(orders.getIdSession() == null || orders.getIdSession().isEmpty())
-				orders.setIdSession(UUID.randomUUID().toString());
+			if(save) {
+				auditClient.saveAudit(
+						xSesion,
+						null,
+						"Realizar Orden",
+						"Si el pago es exitoso, se ejecuta el registro de la Orden",
+						"Modulo de Pago",
+						null,
+						null,
+						xHaveToken,
+						orders
+				);
+				
+				OrdersResponse response = new OrdersResponse(System.currentTimeMillis()+"".lastIndexOf(4)+"");
+				Status status = new Status("0", "Operacion Exitosa", "", response);
+				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.OK);
+				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
+				return res;
+			}else {
+				orders.setId(UUID.randomUUID().toString());
+				orders.setApprovalCode(System.currentTimeMillis()+"".lastIndexOf(4)+"");
+				orders.setCreateDate(new Date());
+				orderRepository.save(orders);
+				OrdersResponse response = new OrdersResponse(orders.getApprovalCode());
+				Status status = new Status("0", "Operacion Exitosa", "", response);
+				
+				if(orders.getIdSession() == null || orders.getIdSession().isEmpty())
+					orders.setIdSession(UUID.randomUUID().toString());
+				
+				orders.setCreateDate(new Date());
 			
-			orders.setCreateDate(new Date());
-		
-			auditClient.saveAudit(
-					xSesion,
-					null,
-					"Realizar Orden",
-					"Si el pago es exitoso, se ejecuta el registro de la Orden",
-					"Modulo de Pago",
-					null,
-					null,
-					xHaveToken,
-					orders
-			);
-			
-			ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.OK);
-			logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
-			return res;
+				auditClient.saveAudit(
+						xSesion,
+						null,
+						"Realizar Orden",
+						"Si el pago es exitoso, se ejecuta el registro de la Orden",
+						"Modulo de Pago",
+						null,
+						null,
+						xHaveToken,
+						orders
+				);
+				
+				ResponseEntity<Status> res = new ResponseEntity<>(status, HttpStatus.OK);
+				logger.info("Response ["+ res.getStatusCode() +"] :"+mapper.writeValueAsString(res));
+				return res;
+			}
 
 		} catch (Exception e) {
 			logger.error(defaultError, e);
