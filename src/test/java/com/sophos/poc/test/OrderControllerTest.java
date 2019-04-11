@@ -60,7 +60,8 @@ public class OrderControllerTest {
 				orderJSON
 			);
 		
-		assertEquals(status.getBody().getCode(), "0");
+		assertEquals(status.getBody().getCode(), "0"); 
+		//TODO 
 		assertEquals(status.getBody().getMessage(), "Operacion Exitosa");
 		assertEquals(status.getStatusCode(), HttpStatus.OK);
 	}
