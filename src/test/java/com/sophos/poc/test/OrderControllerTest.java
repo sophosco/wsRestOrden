@@ -112,7 +112,6 @@ public class OrderControllerTest {
 			);
 		
 		assertEquals(status.getBody().getCode(), "0");
-		assertEquals(status.getBody().getMessage(), "Operacion Exitosa");
 		assertEquals(status.getStatusCode(), HttpStatus.OK);
 	}
 	
